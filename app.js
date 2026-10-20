@@ -238,8 +238,8 @@ function renderLayeredGroup(groupKey, titleLabel) {
     html += `
       <div class="element-box">
         <div class="element-header">
-          <div class="field"><label>Naziv sklopa</label><input type="text" value="${el.name}" onchange="updateElField('${groupKey}', ${elIdx}, 'name', this.value)"></div>
-          <div class="field"><label>Površina A (m²)</label><input type="number" step="1" value="${el.area}" onchange="updateElField('${groupKey}', ${elIdx}, 'area', this.value)"></div>
+          <div class="field"><label>Naziv sklopa</label><input type="text" value="${el.name}" onblur="updateElField('${groupKey}', ${elIdx}, 'name', this.value)"></div>
+          <div class="field"><label>Površina A (m²)</label><input type="number" step="1" value="${el.area}" onblur="updateElField('${groupKey}', ${elIdx}, 'area', this.value)"></div>
           <div class="field"><label>Faktor korekcije temp. fx</label>
             <select onchange="updateElField('${groupKey}', ${elIdx}, 'fx', this.value)">
               <option value="1" ${el.fx == 1 ? 'selected' : ''}>Proti zunanjosti (fx = 1.0)</option>
@@ -267,22 +267,22 @@ function renderLayeredGroup(groupKey, titleLabel) {
               ${res.computedLayers.map((l, lIdx) => `
                 <tr style="${l.bypassedByVent ? 'background:#0284c71a;' : (l.woodPct > 0 ? 'background:#f59e0b1a;' : '')}">
                   <td><strong>${lIdx + 1}.</strong></td>
-                  <td><select onchange="selectMaterial('${groupKey}', ${elIdx}, ${lIdx}, this.value)">${buildMaterialOptions(l.matId)}</select></td>
-                  <td><input type="number" step="0.5" min="0.01" value="${l.d}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'd', this.value)"></td>
+                  <td><select onchange="selectMaterial('${groupKey}',${elIdx}, ${lIdx}, this.value)">${buildMaterialOptions(l.matId)}</select></td>
+                  <td><input type="number" step="0.5" min="0.01" value="${l.d}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'd', this.value)"></td>
                   <td>
-                    <input type="number" step="0.001" min="0.01" value="${l.lambda}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'lambda', this.value)">
+                    <input type="number" step="0.001" min="0.01" value="${l.lambda}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'lambda', this.value)">
                     ${l.woodPct > 0 ? `<div style="font-size:0.65rem; color:#d97706; font-weight:700;">λ_eff=${l.lamEff.toFixed(3)}</div>` : ''}
                   </td>
-                  <td><input type="number" step="0.5" min="0" max="90" value="${l.woodPct || 0}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'woodPct', this.value)"></td>
-                  <td><input type="number" step="1" min="1" value="${l.mu}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'mu', this.value)"></td>
-                  <td><input type="number" step="10" min="1" value="${l.rho}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'rho', this.value)"></td>
-                  <td><input type="number" step="50" min="100" value="${l.c}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'c', this.value)"></td>
+                  <td><input type="number" step="0.5" min="0" max="90" value="${l.woodPct \vert{}\vert{} 0}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'woodPct', this.value)"></td>
+                  <td><input type="number" step="1" min="1" value="${l.mu}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'mu', this.value)"></td>
+                  <td><input type="number" step="10" min="1" value="${l.rho}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'rho', this.value)"></td>
+                  <td><input type="number" step="50" min="100" value="${l.c}" onblur="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'c', this.value)"></td>
                   <td>${l.bypassedByVent ? `<span class="badge badge-info">🌬️ Prezr.</span>` : `<strong>${l.r.toFixed(2)}</strong>`}</td>
                   <td>${l.layerPhi.toFixed(1)} h</td>
                   <td>
-                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx}, ${lIdx}, -1)">▲</button>
-                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx}, ${lIdx}, 1)">▼</button>
-                    <button class="btn-danger btn-sm" onclick="removeLayer('${groupKey}', ${elIdx}, ${lIdx})">✕</button>
+                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx},${lIdx}, -1)">▲</button>
+                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx},${lIdx}, 1)">▼</button>
+                    <button class="btn-danger btn-sm" onclick="removeLayer('${groupKey}', ${elIdx},${lIdx})">✕</button>
                   </td>
                 </tr>
               `).join('')}
@@ -297,9 +297,9 @@ function renderLayeredGroup(groupKey, titleLabel) {
           <div><strong>🪵 Kalkulator deleža špirovcev (lesa):</strong></div>
           <div class="rafter-calc-inputs">
             <span>Širina špirovca:</span>
-            <input type="number" step="0.5" min="2" max="40" style="width:58px;" value="${rWidth}" onchange="updateRafterHelper('widthCm', this.value)">
+            <input type="number" step="0.5" min="2" max="40" style="width:58px;" value="${rWidth}" onblur="updateRafterHelper('widthCm', this.value)">
             <span>cm ÷ Osni razmak (e):</span>
-            <input type="number" step="1" min="20" max="200" style="width:62px;" value="${rSpacing}" onchange="updateRafterHelper('spacingCm', this.value)">
+            <input type="number" step="1" min="20" max="200" style="width:62px;" value="${rSpacing}" onblur="updateRafterHelper('spacingCm', this.value)">
             <span>cm = <strong style="font-size:0.84rem; color:#d97706;">${calcWoodPct.toFixed(1)} % lesa</strong></span>
             <select id="rafterTargetLayer_${groupKey}_${elIdx}" onchange="saveRafterTargetLayer('${groupKey}', ${elIdx}, this.value)" style="max-width:210px;">${layerSelectOpts}</select>
             <button class="btn-primary btn-sm" onclick="applyRafterPctToLayer('${groupKey}', ${elIdx}, ${calcWoodPct.toFixed(1)})">Prenesi ${calcWoodPct.toFixed(1)} % v sloj</button>
@@ -378,7 +378,7 @@ function renderBomTab() {
         <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem;">
           <button class="btn-success btn-sm" onclick="exportBomToCSV()">📥 Izvozi popis v Excel (.csv)</button>
           <span>Kalo (%):</span>
-          <input type="number" step="1" min="0" max="30" style="width:55px; padding:4px;" value="${state.bomWastePct}" onchange="updateBomWaste(this.value)">
+          <input type="number" step="1" min="0" max="30" style="width:55px; padding:4px;" value="${state.bomWastePct}" onblur="updateBomWaste(this.value)">
         </div>
       </div>
       <div class="table-wrap">
@@ -396,7 +396,6 @@ function renderBomTab() {
     </div>`;
 }
 
-// Izvoz popisa materialov v Excel CSV
 function exportBomToCSV() {
   const wasteFactor = 1 + ((parseFloat(state.bomWastePct) || 5) / 100);
   let csv = 'Material;Debelina (cm);Uporabljeno v sklopu;Neto m2;Z odrezom m2;Neto m3;Za narocilo m3\n';
@@ -424,13 +423,13 @@ function renderMaterialsLibraryTab() {
     return `
       <tr style="${isCustom ? 'background:#10b9811a;' : (isMod ? 'background:#0284c71a;' : '')}">
         <td style="width:42px; text-align:center;"><input type="color" value="${m.color || '#94a3b8'}" style="width:28px; height:26px; padding:1px;" onchange="editExistingMaterial('${m.id}', 'color', this.value)"></td>
-        <td><input type="text" value="${m.name}" onchange="editExistingMaterial('${m.id}', 'name', this.value)"></td>
+        <td><input type="text" value="${m.name}" onblur="editExistingMaterial('${m.id}', 'name', this.value)"></td>
         <td style="font-size:0.73rem; color:var(--muted);">${m.group}</td>
-        <td style="width:80px;"><input type="number" step="0.5" min="0.01" value="${m.defD || 5}" onchange="editExistingMaterial('${m.id}', 'defD', this.value)"></td>
-        <td style="width:92px;"><input type="number" step="0.001" min="0.005" value="${m.lambda}" onchange="editExistingMaterial('${m.id}', 'lambda', this.value)"></td>
-        <td style="width:85px;"><input type="number" step="1" min="1" value="${m.mu}" onchange="editExistingMaterial('${m.id}', 'mu', this.value)"></td>
-        <td style="width:85px;"><input type="number" step="10" min="1" value="${m.rho}" onchange="editExistingMaterial('${m.id}', 'rho', this.value)"></td>
-        <td style="width:85px;"><input type="number" step="50" min="100" value="${m.c}" onchange="editExistingMaterial('${m.id}', 'c', this.value)"></td>
+        <td style="width:80px;"><input type="number" step="0.5" min="0.01" value="${m.defD || 5}" onblur="editExistingMaterial('${m.id}', 'defD', this.value)"></td>
+        <td style="width:92px;"><input type="number" step="0.001" min="0.005" value="${m.lambda}" onblur="editExistingMaterial('${m.id}', 'lambda', this.value)"></td>
+        <td style="width:85px;"><input type="number" step="1" min="1" value="${m.mu}" onblur="editExistingMaterial('${m.id}', 'mu', this.value)"></td>
+        <td style="width:85px;"><input type="number" step="10" min="1" value="${m.rho}" onblur="editExistingMaterial('${m.id}', 'rho', this.value)"></td>
+        <td style="width:85px;"><input type="number" step="50" min="100" value="${m.c}" onblur="editExistingMaterial('${m.id}', 'c', this.value)"></td>
         <td style="width:120px;">
           ${isCustom ? `<button class="btn-danger btn-sm" onclick="deleteCustomMaterial('${m.id}')">✕ Izbriši</button>` : (isMod ? `<button class="btn-secondary btn-sm" onclick="resetSingleMaterialOverride('${m.id}')">↺ Ponastavi</button>` : `<span style="font-size:0.7rem; color:var(--muted);">Tovarniški</span>`)}
         </td>
@@ -478,7 +477,7 @@ function renderWindowsTab() {
     const gain = area * orientObj.kwhM2 * (parseFloat(w.g) || 0.5) * 0.70 * 0.75 * 0.85;
     totalArea += area; totalLoss += loss; totalSolar += gain;
     const orientOpts = Object.keys(SOLAR_WINTER_IRR).map(k => `<option value="${k}" ${w.orient === k ? 'selected' : ''}>${SOLAR_WINTER_IRR[k].label}</option>`).join('');
-    return `<tr><td><input type="text" value="${w.name}" onchange="updateWindow(${idx}, 'name', this.value)"></td><td><select onchange="updateWindow(${idx}, 'orient', this.value)">${orientOpts}</select></td><td><input type="number" step="0.1" value="${w.w}" onchange="updateWindow(${idx}, 'w', this.value)"></td><td><input type="number" step="0.1" value="${w.h}" onchange="updateWindow(${idx}, 'h', this.value)"></td><td><input type="number" step="1" value="${w.count}" onchange="updateWindow(${idx}, 'count', this.value)"></td><td><strong>${area.toFixed(2)} m²</strong></td><td><input type="number" step="0.05" value="${w.uw}" onchange="updateWindow(${idx}, 'uw', this.value)"></td><td><input type="number" step="0.02" value="${w.g || 0.50}" onchange="updateWindow(${idx}, 'g', this.value)"></td><td><strong style="color:var(--primary)">${Math.round(loss)} W</strong></td><td><strong style="color:var(--success)">+${Math.round(gain)} kWh</strong></td><td><button class="btn-danger btn-sm" onclick="removeWindow(${idx})">✕</button></td></tr>`;
+    return `<tr><td><input type="text" value="${w.name}" onblur="updateWindow(${idx}, 'name', this.value)"></td><td><select onchange="updateWindow(${idx}, 'orient', this.value)">${orientOpts}</select></td><td><input type="number" step="0.1" value="${w.w}" onblur="updateWindow(${idx}, 'w', this.value)"></td><td><input type="number" step="0.1" value="${w.h}" onblur="updateWindow(${idx}, 'h', this.value)"></td><td><input type="number" step="1" value="${w.count}" onblur="updateWindow(${idx}, 'count', this.value)"></td><td><strong>${area.toFixed(2)} m²</strong></td><td><input type="number" step="0.05" value="${w.uw}" onblur="updateWindow(${idx}, 'uw', this.value)"></td><td><input type="number" step="0.02" value="${w.g || 0.50}" onblur="updateWindow(${idx}, 'g', this.value)"></td><td><strong style="color:var(--primary)">${Math.round(loss)} W</strong></td><td><strong style="color:var(--success)">+${Math.round(gain)} kWh</strong></td><td><button class="btn-danger btn-sm" onclick="removeWindow(${idx})">✕</button></td></tr>`;
   }).join('');
 
   document.getElementById('categoryContent').innerHTML = `<div class="card"><div class="card-title"><span>🪟 Okna, steklene površine in solarni dobitki</span><button class="btn-primary btn-sm" onclick="addWindow()">+ Dodaj okna</button></div><div class="table-wrap"><table class="layers-table"><thead><tr><th>Opis oken</th><th style="width:155px;">Orientacija</th><th style="width:70px;">Širina</th><th style="width:70px;">Višina</th><th style="width:65px;">Kosov</th><th style="width:80px;">Površina</th><th style="width:80px;">Uw</th><th style="width:72px;">Faktor g</th><th style="width:85px;">Izguba</th><th style="width:95px;">Zimski dobitek</th><th style="width:42px;"></th></tr></thead><tbody>${rowsHtml}</tbody></table></div><div class="metrics-bar"><div class="metric-item"><span class="metric-label">Skupna površina oken</span><span class="metric-val">${totalArea.toFixed(2)} m²</span></div><div class="metric-item"><span class="metric-label">Transmisijska izguba oken</span><span class="metric-val" style="color:var(--primary)">${Math.round(totalLoss)} W</span></div><div class="metric-item"><span class="metric-label">Zimski solarni dobitki</span><span class="metric-val" style="color:var(--success)">+${Math.round(totalSolar)} kWh/leto</span></div></div></div>`;
@@ -486,7 +485,7 @@ function renderWindowsTab() {
 
 function renderDoorsTab() {
   const deltaT = Math.max(0, state.boundary.ti - state.boundary.te);
-  document.getElementById('categoryContent').innerHTML = `<div class="card"><div class="card-title"><span>🚪 Vrata in podstrešne stopnice</span><button class="btn-primary btn-sm" onclick="addDoor()">+ Dodaj vrata</button></div><table class="layers-table"><thead><tr><th>Opis vrat / odprtine</th><th style="width:110px;">Površina (m²)</th><th style="width:110px;">Ud (W/m²K)</th><th style="width:150px;">Faktor fx</th><th style="width:95px;">Izguba (W)</th><th style="width:50px;"></th></tr></thead><tbody>${state.doors.map((d, idx) => `<tr><td><input type="text" value="${d.name}" onchange="updateDoor(${idx}, 'name', this.value)"></td><td><input type="number" step="0.05" value="${d.area}" onchange="updateDoor(${idx}, 'area', this.value)"></td><td><input type="number" step="0.05" value="${d.ud}" onchange="updateDoor(${idx}, 'ud', this.value)"></td><td><select onchange="updateDoor(${idx}, 'fx', this.value)"><option value="1" ${d.fx == 1 ? 'selected' : ''}>Zunanja (1.0)</option><option value="0.8" ${d.fx == 0.8 ? 'selected' : ''}>Podstrešje (0.8)</option><option value="0.5" ${d.fx == 0.5 ? 'selected' : ''}>Klet/garaža (0.5)</option></select></td><td><strong style="color:var(--primary)">${Math.round((d.area || 0) * (d.ud || 0) * deltaT * (d.fx || 1))} W</strong></td><td><button class="btn-danger btn-sm" onclick="removeDoor(${idx})">✕</button></td></tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('categoryContent').innerHTML = `<div class="card"><div class="card-title"><span>🚪 Vrata in podstrešne stopnice</span><button class="btn-primary btn-sm" onclick="addDoor()">+ Dodaj vrata</button></div><table class="layers-table"><thead><tr><th>Opis vrat / odprtine</th><th style="width:110px;">Površina (m²)</th><th style="width:110px;">Ud (W/m²K)</th><th style="width:150px;">Faktor fx</th><th style="width:95px;">Izguba (W)</th><th style="width:50px;"></th></tr></thead><tbody>${state.doors.map((d, idx) => `<tr><td><input type="text" value="${d.name}" onblur="updateDoor(${idx}, 'name', this.value)"></td><td><input type="number" step="0.05" value="${d.area}" onblur="updateDoor(${idx}, 'area', this.value)"></td><td><input type="number" step="0.05" value="${d.ud}" onblur="updateDoor(${idx}, 'ud', this.value)"></td><td><select onchange="updateDoor(${idx}, 'fx', this.value)"><option value="1" ${d.fx == 1 ? 'selected' : ''}>Zunanja (1.0)</option><option value="0.8" ${d.fx == 0.8 ? 'selected' : ''}>Podstrešje (0.8)</option><option value="0.5" ${d.fx == 0.5 ? 'selected' : ''}>Klet/garaža (0.5)</option></select></td><td><strong style="color:var(--primary)">${Math.round((d.area || 0) * (d.ud || 0) * deltaT * (d.fx || 1))} W</strong></td><td><button class="btn-danger btn-sm" onclick="removeDoor(${idx})">✕</button></td></tr>`).join('')}</tbody></table></div>`;
 }
 
 function renderBridgesTab() {
@@ -503,7 +502,7 @@ function renderBridgesTab() {
       </div>
       <div style="margin-bottom:14px; display:flex; align-items:center; gap:12px; background:var(--box); padding:10px; border-radius:8px; border:1px solid var(--border);">
         <label style="font-size:0.84rem; font-weight:600;"><input type="checkbox" ${state.bridges.useFlatRate ? 'checked' : ''} onchange="toggleBridgeMode(this.checked)"> Uporabi pavšalni pribitek ΔU_tb na celoten ovoj stavbe</label>
-        ${state.bridges.useFlatRate ? `<input type="number" step="0.01" style="width:90px; padding:5px;" value="${state.bridges.flatDeltaU}" onchange="updateFlatBridge(this.value)"> W/m²K` : ''}
+        ${state.bridges.useFlatRate ? `<input type="number" step="0.01" style="width:90px; padding:5px;" value="${state.bridges.flatDeltaU}" onblur="updateFlatBridge(this.value)"> W/m²K` : ''}
       </div>
       ${!state.bridges.useFlatRate ? `
       <div style="margin-bottom:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; background:var(--primary-light); padding:10px; border-radius:8px;">
@@ -516,9 +515,9 @@ function renderBridgesTab() {
         <tbody>
           ${state.bridges.items.map((b, idx) => `
             <tr>
-              <td><input type="text" value="${b.name}" onchange="updateBridge(${idx}, 'name', this.value)"></td>
-              <td><input type="number" step="1" value="${b.length}" onchange="updateBridge(${idx}, 'length', this.value)"></td>
-              <td><input type="number" step="0.01" value="${b.psi}" onchange="updateBridge(${idx}, 'psi', this.value)"></td>
+              <td><input type="text" value="${b.name}" onblur="updateBridge(${idx}, 'name', this.value)"></td>
+              <td><input type="number" step="1" value="${b.length}" onblur="updateBridge(${idx}, 'length', this.value)"></td>
+              <td><input type="number" step="0.01" value="${b.psi}" onblur="updateBridge(${idx}, 'psi', this.value)"></td>
               <td><strong style="color:var(--primary)">${Math.round((b.length || 0) * (b.psi || 0) * deltaT * (b.fx || 1))} W</strong></td>
               <td><button class="btn-danger btn-sm" onclick="removeBridge(${idx})">✕</button></td>
             </tr>`).join('')}
@@ -545,7 +544,7 @@ function renderVentilationTab(totals) {
   const recEff = Math.max(0, parseFloat(v.heatRecoveryEff) || 0), recW = natW * (1 - recEff / 100), recKwh = (recW / 1000) * hours;
   const savedEur = (natKwh - recKwh) * calcFuelAnnualCost(state.fuels[1] || state.fuels[0], 1, 0).costPerEffectiveKwh;
 
-  document.getElementById('categoryContent').innerHTML = `<div class="card"><div class="card-title"><span>💨 Prezračevalne izgube in primerjalnik rekuperacije</span><span class="badge badge-ok">Pretok zraka: ${Math.round(flowM3h)} m³/h</span></div><div style="margin-bottom:12px;"><label style="font-weight:700; font-size:0.86rem;"><input type="checkbox" ${v.enabled ? 'checked' : ''} onchange="updateVent('enabled', this.checked)"> Vključi prezračevalne izgube v skupni izračun hiše</label></div><div class="boundary-grid"><div class="field"><label>Neto tlorisna površina (m²)</label><input type="number" value="${v.volumeArea}" onchange="updateVent('volumeArea', this.value)"></div><div class="field"><label>Povprečna višina stropov (m)</label><input type="number" step="0.05" value="${v.ceilingHeight}" onchange="updateVent('ceilingHeight', this.value)"></div><div class="field"><label>Število izmenjav zraka n (1/h)</label><input type="number" step="0.05" value="${v.airChanges}" onchange="updateVent('airChanges', this.value)"></div><div class="field"><label>Izkoristek rekuperacije (%)</label><input type="number" min="0" max="95" step="5" value="${v.heatRecoveryEff}" onchange="updateVent('heatRecoveryEff', this.value)"></div></div><div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-secondary btn-sm" onclick="updateVent('heatRecoveryEff', 0)">Odpiranje oken (0 %)</button><button class="btn-primary btn-sm" onclick="updateVent('heatRecoveryEff', 85)">Centralna rekuperacija (85 %)</button><button class="btn-secondary btn-sm" onclick="updateVent('heatRecoveryEff', 90)">Entalpijska rekuperacija (90 %)</button></div><div class="metrics-bar" style="margin-top:14px;"><div class="metric-item"><span class="metric-label">Brez rekuperacije</span><span class="metric-val" style="color:var(--danger)">${Math.round(natW)} W (${Math.round(natKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Z rekuperacijo (${recEff} %)</span><span class="metric-val" style="color:var(--success)">${Math.round(recW)} W (${Math.round(recKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Prihranek moči in toplote</span><span class="metric-val" style="color:var(--primary)">-${Math.round(natW - recW)} W (-${Math.round(natKwh - recKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Letni prihranek</span><span class="metric-val" style="color:var(--success)">~${Math.round(savedEur)} €/leto</span></div></div></div>`;
+  document.getElementById('categoryContent').innerHTML = `<div class="card"><div class="card-title"><span>💨 Prezračevalne izgube in primerjalnik rekuperacije</span><span class="badge badge-ok">Pretok zraka: ${Math.round(flowM3h)} m³/h</span></div><div style="margin-bottom:12px;"><label style="font-weight:700; font-size:0.86rem;"><input type="checkbox" ${v.enabled ? 'checked' : ''} onchange="updateVent('enabled', this.checked)"> Vključi prezračevalne izgube v skupni izračun hiše</label></div><div class="boundary-grid"><div class="field"><label>Neto tlorisna površina (m²)</label><input type="number" value="${v.volumeArea}" onblur="updateVent('volumeArea', this.value)"></div><div class="field"><label>Povprečna višina stropov (m)</label><input type="number" step="0.05" value="${v.ceilingHeight}" onblur="updateVent('ceilingHeight', this.value)"></div><div class="field"><label>Število izmenjav zraka n (1/h)</label><input type="number" step="0.05" value="${v.airChanges}" onblur="updateVent('airChanges', this.value)"></div><div class="field"><label>Izkoristek rekuperacije (%)</label><input type="number" min="0" max="95" step="5" value="${v.heatRecoveryEff}" onblur="updateVent('heatRecoveryEff', this.value)"></div></div><div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-secondary btn-sm" onclick="updateVent('heatRecoveryEff', 0)">Odpiranje oken (0 %)</button><button class="btn-primary btn-sm" onclick="updateVent('heatRecoveryEff', 85)">Centralna rekuperacija (85 %)</button><button class="btn-secondary btn-sm" onclick="updateVent('heatRecoveryEff', 90)">Entalpijska rekuperacija (90 %)</button></div><div class="metrics-bar" style="margin-top:14px;"><div class="metric-item"><span class="metric-label">Brez rekuperacije</span><span class="metric-val" style="color:var(--danger)">${Math.round(natW)} W (${Math.round(natKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Z rekuperacijo (${recEff} %)</span><span class="metric-val" style="color:var(--success)">${Math.round(recW)} W (${Math.round(recKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Prihranek moči in toplote</span><span class="metric-val" style="color:var(--primary)">-${Math.round(natW - recW)} W (-${Math.round(natKwh - recKwh)} kWh)</span></div><div class="metric-item"><span class="metric-label">Letni prihranek</span><span class="metric-val" style="color:var(--success)">~${Math.round(savedEur)} €/leto</span></div></div></div>`;
 }
 
 function renderDhwAndWellTab(totals) {
@@ -564,15 +563,15 @@ function renderDhwAndWellTab(totals) {
             <option value="combo" ${dw.dhwSourceMode === 'combo' ? 'selected' : ''}>4. Kombinirano (60 % pozimi glavni vir, 40 % poleti el. bojler)</option>
           </select>
         </div>
-        <div class="field"><label>COP glavne TČ za bojler (55 °C)</label><input type="number" step="0.1" min="1.5" value="${dw.mainHpDhwCop}" onchange="updateDhw('mainHpDhwCop', this.value)"></div>
-        <div class="field"><label>SCOP ločene sanitarne TČ</label><input type="number" step="0.1" min="1.5" value="${dw.sanitaryHpCop}" onchange="updateDhw('sanitaryHpCop', this.value)"></div>
+        <div class="field"><label>COP glavne TČ za bojler (55 °C)</label><input type="number" step="0.1" min="1.5" value="${dw.mainHpDhwCop}" onblur="updateDhw('mainHpDhwCop', this.value)"></div>
+        <div class="field"><label>SCOP ločene sanitarne TČ</label><input type="number" step="0.1" min="1.5" value="${dw.sanitaryHpCop}" onblur="updateDhw('sanitaryHpCop', this.value)"></div>
       </div>
       <div class="boundary-grid">
-        <div class="field"><label>Število oseb</label><input type="number" min="1" max="15" value="${dw.persons}" onchange="updateDhw('persons', this.value)"></div>
-        <div class="field"><label>Poraba (L / osebo na dan)</label><input type="number" min="15" max="120" step="5" value="${dw.litersPerPerson}" onchange="updateDhw('litersPerPerson', this.value)"></div>
-        <div class="field"><label>Temp. hladne vode (°C)</label><input type="number" step="1" value="${dw.tempCold}" onchange="updateDhw('tempCold', this.value)"></div>
-        <div class="field"><label>Temp. v bojlerju (°C)</label><input type="number" step="1" value="${dw.tempHot}" onchange="updateDhw('tempHot', this.value)"></div>
-        <div class="field"><label>Izgube bojlerja in cevi (%)</label><input type="number" min="0" max="50" step="5" value="${dw.tankLossPct}" onchange="updateDhw('tankLossPct', this.value)"></div>
+        <div class="field"><label>Število oseb</label><input type="number" min="1" max="15" value="${dw.persons}" onblur="updateDhw('persons', this.value)"></div>
+        <div class="field"><label>Poraba (L / osebo na dan)</label><input type="number" min="15" max="120" step="5" value="${dw.litersPerPerson}" onblur="updateDhw('litersPerPerson', this.value)"></div>
+        <div class="field"><label>Temp. hladne vode (°C)</label><input type="number" step="1" value="${dw.tempCold}" onblur="updateDhw('tempCold', this.value)"></div>
+        <div class="field"><label>Temp. v bojlerju (°C)</label><input type="number" step="1" value="${dw.tempHot}" onblur="updateDhw('tempHot', this.value)"></div>
+        <div class="field"><label>Izgube bojlerja in cevi (%)</label><input type="number" min="0" max="50" step="5" value="${dw.tankLossPct}" onblur="updateDhw('tankLossPct', this.value)"></div>
       </div>
       <div class="metrics-bar">
         <div class="metric-item"><span class="metric-label">Dnevna količina tople vode</span><span class="metric-val">${dw.persons * dw.litersPerPerson} L/dan</span></div>
@@ -584,12 +583,12 @@ function renderDhwAndWellTab(totals) {
       <div class="card-title"><span>💧 Vrtina TČ voda–voda: Potopna črpalka, pretok podtalnice in poletno hlajenje</span><span class="badge badge-ok">Pretok: ${info.requiredWaterFlowM3h.toFixed(2)} m³/h (${info.requiredWaterFlowLmin.toFixed(1)} L/min)</span></div>
       <div style="margin-bottom:10px;"><label style="font-weight:700; font-size:0.84rem;"><input type="checkbox" ${dw.wellPumpAutoSync ? 'checked' : ''} onchange="updateDhw('wellPumpAutoSync', this.checked)"> Samodejno prenesi sistemski SCOP (${info.systemScop.toFixed(2)}) v tabelo stroškov za TČ voda–voda</label></div>
       <div class="boundary-grid">
-        <div class="field"><label>Grelna moč TČ voda–voda (kW)</label><input type="number" step="0.5" min="3" value="${dw.hpThermalPowerKw}" onchange="updateDhw('hpThermalPowerKw', this.value)"></div>
-        <div class="field"><label>Tovarniški COP same TČ</label><input type="number" step="0.1" min="2" value="${dw.hpMachineCop}" onchange="updateDhw('hpMachineCop', this.value)"></div>
-        <div class="field"><label>Moč potopne črpalke v vrtini (W)</label><input type="number" step="25" min="50" value="${dw.wellPumpWatts}" onchange="updateDhw('wellPumpWatts', this.value)"></div>
-        <div class="field"><label>Ohlajanje podtalnice ΔT (K)</label><input type="number" step="0.5" min="2" max="6" value="${dw.wellWaterDeltaT}" onchange="updateDhw('wellWaterDeltaT', this.value)"></div>
-        <div class="field"><label>Poletna notranja temp. (°C)</label><input type="number" step="0.5" value="${dw.summerIndoorTemp}" onchange="updateDhw('summerIndoorTemp', this.value)"></div>
-        <div class="field"><label>Poletna notranja vlaga (%)</label><input type="number" step="5" value="${dw.summerIndoorRh}" onchange="updateDhw('summerIndoorRh', this.value)"></div>
+        <div class="field"><label>Grelna moč TČ voda–voda (kW)</label><input type="number" step="0.5" min="3" value="${dw.hpThermalPowerKw}" onblur="updateDhw('hpThermalPowerKw', this.value)"></div>
+        <div class="field"><label>Tovarniški COP same TČ</label><input type="number" step="0.1" min="2" value="${dw.hpMachineCop}" onblur="updateDhw('hpMachineCop', this.value)"></div>
+        <div class="field"><label>Moč potopne črpalke v vrtini (W)</label><input type="number" step="25" min="50" value="${dw.wellPumpWatts}" onblur="updateDhw('wellPumpWatts', this.value)"></div>
+        <div class="field"><label>Ohlajanje podtalnice ΔT (K)</label><input type="number" step="0.5" min="2" max="6" value="${dw.wellWaterDeltaT}" onblur="updateDhw('wellWaterDeltaT', this.value)"></div>
+        <div class="field"><label>Poletna notranja temp. (°C)</label><input type="number" step="0.5" value="${dw.summerIndoorTemp}" onblur="updateDhw('summerIndoorTemp', this.value)"></div>
+        <div class="field"><label>Poletna notranja vlaga (%)</label><input type="number" step="5" value="${dw.summerIndoorRh}" onblur="updateDhw('summerIndoorRh', this.value)"></div>
       </div>
       <div class="metrics-bar">
         <div class="metric-item"><span class="metric-label">Potreben pretok podtalnice</span><span class="metric-val" style="color:var(--primary)">${info.requiredWaterFlowM3h.toFixed(2)} m³/h (${info.requiredWaterFlowLmin.toFixed(1)} L/min)</span></div>
@@ -616,17 +615,17 @@ function renderHpAndFusesTab(totals) {
       <div class="boundary-grid" style="margin-bottom:14px;">
         <div class="field"><label>Tip toplotne črpalke</label><select onchange="updateHpSetting('selectedHpFuelId', this.value)"><option value="tc_voda" ${hp.selectedHpFuelId === 'tc_voda' ? 'selected' : ''}>TČ voda–voda</option><option value="tc_zrak" ${hp.selectedHpFuelId === 'tc_zrak' ? 'selected' : ''}>TČ zrak–voda</option></select></div>
         <div class="field"><label>Način določanja el. odjema pri ${state.boundary.te} °C</label><select onchange="updateHpSetting('peakElMode', this.value)"><option value="manual" ${hp.peakElMode === 'manual' ? 'selected' : ''}>Ročni vnos moči (kW el.)</option><option value="auto" ${hp.peakElMode === 'auto' ? 'selected' : ''}>Avtomatsko iz izgub (${totals.autoHpElAtTeKw.toFixed(2)} kW)</option></select></div>
-        <div class="field" style="background:var(--primary-light); padding:5px 7px; border-radius:6px;"><label style="color:var(--primary-dark); font-weight:800;">⚡ El. odjem TČ pri ${state.boundary.te} °C (kW el.)</label><input type="number" step="0.05" min="0.2" value="${hp.peakElMode === 'manual' ? hp.manualPeakElKw : totals.autoHpElAtTeKw.toFixed(2)}" onchange="setManualHpPeakEl(this.value)"></div>
-        <div class="field"><label>Maks. el. moč kompresorja (kW el.)</label><input type="number" step="0.1" min="0.5" value="${hp.maxCompressorElKw}" onchange="updateHpSetting('maxCompressorElKw', this.value)"></div>
+        <div class="field" style="background:var(--primary-light); padding:5px 7px; border-radius:6px;"><label style="color:var(--primary-dark); font-weight:800;">⚡ El. odjem TČ pri ${state.boundary.te} °C (kW el.)</label><input type="number" step="0.05" min="0.2" value="${hp.peakElMode === 'manual' ? hp.manualPeakElKw : totals.autoHpElAtTeKw.toFixed(2)}" onblur="setManualHpPeakEl(this.value)"></div>
+        <div class="field"><label>Maks. el. moč kompresorja (kW el.)</label><input type="number" step="0.1" min="0.5" value="${hp.maxCompressorElKw}" onblur="updateHpSetting('maxCompressorElKw', this.value)"></div>
       </div>
       <div class="boundary-grid">
-        <div class="field"><label>Nazivna grelna moč TČ (kW)</label><input type="number" step="0.5" value="${hp.nominalThermalKw}" onchange="updateHpSetting('nominalThermalKw', this.value)"></div>
-        <div class="field"><label>Maks. grelna moč pri ${state.boundary.te} °C (kW)</label><input type="number" step="0.5" value="${hp.maxThermalKwAtPeak}" onchange="updateHpSetting('maxThermalKwAtPeak', this.value)"></div>
-        <div class="field"><label>Min. modulacija TČ (kW)</label><input type="number" step="0.2" value="${hp.minModulationKw}" onchange="updateHpSetting('minModulationKw', this.value)"></div>
-        <div class="field"><label>COP pri ${state.boundary.te} °C</label><input type="number" step="0.1" value="${hp.copAtDesignTe}" onchange="updateHpSetting('copAtDesignTe', this.value)"></div>
-        <div class="field"><label>Pomožne črpalke (potopna + obtočna, W)</label><input type="number" step="10" value="${hp.auxPumpsWatts}" onchange="updateHpSetting('auxPumpsWatts', this.value)"></div>
-        <div class="field"><label>Bivalentna točka (°C)</label><input type="number" step="1" value="${hp.bivalentTemp}" onchange="updateHpSetting('bivalentTemp', this.value)"></div>
-        <div class="field"><label>Moč el. grelca pri ${state.boundary.te} °C (kW)</label><input type="number" step="0.5" min="0" value="${hp.backupHeaterKw}" onchange="updateHpSetting('backupHeaterKw', this.value)"></div>
+        <div class="field"><label>Nazivna grelna moč TČ (kW)</label><input type="number" step="0.5" value="${hp.nominalThermalKw}" onblur="updateHpSetting('nominalThermalKw', this.value)"></div>
+        <div class="field"><label>Maks. grelna moč pri ${state.boundary.te} °C (kW)</label><input type="number" step="0.5" value="${hp.maxThermalKwAtPeak}" onblur="updateHpSetting('maxThermalKwAtPeak', this.value)"></div>
+        <div class="field"><label>Min. modulacija TČ (kW)</label><input type="number" step="0.2" value="${hp.minModulationKw}" onblur="updateHpSetting('minModulationKw', this.value)"></div>
+        <div class="field"><label>COP pri ${state.boundary.te} °C</label><input type="number" step="0.1" value="${hp.copAtDesignTe}" onblur="updateHpSetting('copAtDesignTe', this.value)"></div>
+        <div class="field"><label>Pomožne črpalke (potopna + obtočna, W)</label><input type="number" step="10" value="${hp.auxPumpsWatts}" onblur="updateHpSetting('auxPumpsWatts', this.value)"></div>
+        <div class="field"><label>Bivalentna točka (°C)</label><input type="number" step="1" value="${hp.bivalentTemp}" onblur="updateHpSetting('bivalentTemp', this.value)"></div>
+        <div class="field"><label>Moč el. grelca pri ${state.boundary.te} °C (kW)</label><input type="number" step="0.5" min="0" value="${hp.backupHeaterKw}" onblur="updateHpSetting('backupHeaterKw', this.value)"></div>
       </div>
       <div class="metrics-bar" style="margin-top:14px;">
         <div class="metric-item"><span class="metric-label">Potrebna moč hiše</span><span class="metric-val">${totals.totalKw.toFixed(2)} kW toplote</span></div>
@@ -639,7 +638,7 @@ function renderHpAndFusesTab(totals) {
       <div class="card-title"><span>⚡ Kontrola glavnih varovalk (3×${fuseAmps} A) in Časovni blok 1</span><span class="badge ${fuseOk ? 'badge-ok' : 'badge-err'}">${fuseOk ? '✓ Varovalke zadoščajo' : '⚠ Preobremenitev!'}</span></div>
       <div class="boundary-grid">
         <div class="field"><label>Glavne varovalke hiše</label><select onchange="updateHpSetting('fuseAmps', this.value)"><option value="16" ${hp.fuseAmps == 16 ? 'selected' : ''}>3×16 A (11.0 kW)</option><option value="20" ${hp.fuseAmps == 20 ? 'selected' : ''}>3×20 A (13.8 kW)</option><option value="25" ${hp.fuseAmps == 25 ? 'selected' : ''}>3×25 A (17.2 kW)</option><option value="35" ${hp.fuseAmps == 35 ? 'selected' : ''}>3×35 A (24.1 kW)</option></select></div>
-        <div class="field"><label>Ostali sočasni porabniki v hiši (kW)</label><input type="number" step="0.5" value="${hp.baseHousePeakKw}" onchange="updateHpSetting('baseHousePeakKw', this.value)"></div>
+        <div class="field"><label>Ostali sočasni porabniki v hiši (kW)</label><input type="number" step="0.5" value="${hp.baseHousePeakKw}" onblur="updateHpSetting('baseHousePeakKw', this.value)"></div>
       </div>
       <div class="metrics-bar">
         <div class="metric-item"><span class="metric-label">Maks. moč varovalk</span><span class="metric-val">${maxFuseKw.toFixed(1)} kW</span></div>
@@ -658,7 +657,7 @@ function renderMeterAndSolarTab(totals) {
   const monthRows = sim.months.map((m, idx) => `
     <tr>
       <td><strong>${m.m}</strong></td>
-      <td><input type="number" step="10" style="width:78px;" value="${Math.round(m.meterM)}" onchange="updateMonthlyMeter(${idx}, this.value)"> kWh</td>
+      <td><input type="number" step="10" style="width:78px;" value="${Math.round(m.meterM)}" onblur="updateMonthlyMeter(${idx}, this.value)"> kWh</td>
       <td style="color:var(--muted)">${Math.round(m.hpModelM)} kWh</td>
       <td style="color:var(--success)"><strong>${Math.round(m.pvM)} kWh</strong></td>
       <td>${Math.round(m.directM)} kWh</td>
@@ -679,13 +678,13 @@ function renderMeterAndSolarTab(totals) {
         </div>
       </div>
       <div class="boundary-grid">
-        <div class="field"><label>Skupna letna poraba (kWh)</label><input type="number" step="50" value="${md.totalMeterKwh}" onchange="updateMeterField('totalMeterKwh', this.value)"></div>
-        <div class="field"><label>Visoka tarifa VT (kWh)</label><input type="number" step="20" value="${md.vtKwh}" onchange="updateMeterField('vtKwh', this.value)"></div>
-        <div class="field"><label>Mala tarifa MT (kWh)</label><input type="number" step="20" value="${md.mtKwh}" onchange="updateMeterField('mtKwh', this.value)"></div>
-        <div class="field" style="background:var(--primary-light); padding:4px 6px; border-radius:6px;"><label style="color:var(--primary-dark); font-weight:800;">Izmerjena TČ (kWh el.)</label><input type="number" step="25" value="${md.measuredHpElKwh}" onchange="updateMeterField('measuredHpElKwh', this.value)"></div>
-        <div class="field"><label>Klima / hlajenje (kWh)</label><input type="number" step="25" value="${md.measuredAcElKwh}" onchange="updateMeterField('measuredAcElKwh', this.value)"></div>
-        <div class="field"><label>Gospodinjstvo (kWh)</label><input type="number" step="25" value="${md.measuredHouseholdKwh}" onchange="updateMeterField('measuredHouseholdKwh', this.value)"></div>
-        <div class="field"><label>Letni strošek elektrike (€)</label><input type="number" step="10" value="${md.annualBillEur}" onchange="updateMeterField('annualBillEur', this.value)"></div>
+        <div class="field"><label>Skupna letna poraba (kWh)</label><input type="number" step="50" value="${md.totalMeterKwh}" onblur="updateMeterField('totalMeterKwh', this.value)"></div>
+        <div class="field"><label>Visoka tarifa VT (kWh)</label><input type="number" step="20" value="${md.vtKwh}" onblur="updateMeterField('vtKwh', this.value)"></div>
+        <div class="field"><label>Mala tarifa MT (kWh)</label><input type="number" step="20" value="${md.mtKwh}" onblur="updateMeterField('mtKwh', this.value)"></div>
+        <div class="field" style="background:var(--primary-light); padding:4px 6px; border-radius:6px;"><label style="color:var(--primary-dark); font-weight:800;">Izmerjena TČ (kWh el.)</label><input type="number" step="25" value="${md.measuredHpElKwh}" onblur="updateMeterField('measuredHpElKwh', this.value)"></div>
+        <div class="field"><label>Klima / hlajenje (kWh)</label><input type="number" step="25" value="${md.measuredAcElKwh}" onblur="updateMeterField('measuredAcElKwh', this.value)"></div>
+        <div class="field"><label>Gospodinjstvo (kWh)</label><input type="number" step="25" value="${md.measuredHouseholdKwh}" onblur="updateMeterField('measuredHouseholdKwh', this.value)"></div>
+        <div class="field"><label>Letni strošek elektrike (€)</label><input type="number" step="10" value="${md.annualBillEur}" onblur="updateMeterField('annualBillEur', this.value)"></div>
       </div>
       <div class="metrics-bar" style="margin-top:11px;">
         <div class="metric-item"><span class="metric-label">Model TČ</span><span class="metric-val" style="color:var(--primary)">${Math.round(modelHpElKwh)} kWh el.</span></div>
@@ -713,16 +712,16 @@ function renderMeterAndSolarTab(totals) {
         </div>
       </div>
       <div class="boundary-grid" style="margin-bottom:12px;">
-        <div class="field"><label>Moč SE (kWp)</label><input type="number" step="0.5" value="${sg.pvKwp}" onchange="updateSolarGrid('pvKwp', this.value)"></div>
-        <div class="field"><label>Izplen SE (kWh/kWp)</label><input type="number" step="50" value="${sg.specificYield}" onchange="updateSolarGrid('specificYield', this.value)"></div>
-        <div class="field" style="background:var(--success-bg); padding:4px 6px; border-radius:6px;"><label style="color:var(--success); font-weight:800;">🔋 Kapaciteta baterije (kWh)</label><input type="number" step="1" min="0" value="${sg.batteryCapKwh}" onchange="updateSolarGrid('batteryCapKwh', this.value)"></div>
-        <div class="field"><label>DoD praznjenje (%)</label><input type="number" step="5" value="${sg.batteryDodPct}" onchange="updateSolarGrid('batteryDodPct', this.value)"></div>
-        <div class="field"><label>Izkoristek baterije (%)</label><input type="number" step="2" value="${sg.batteryEffPct}" onchange="updateSolarGrid('batteryEffPct', this.value)"></div>
-        <div class="field"><label>Direktna dnevna poraba (%)</label><input type="number" step="2" value="${sg.directSelfConsPct}" onchange="updateSolarGrid('directSelfConsPct', this.value)"></div>
+        <div class="field"><label>Moč SE (kWp)</label><input type="number" step="0.5" value="${sg.pvKwp}" onblur="updateSolarGrid('pvKwp', this.value)"></div>
+        <div class="field"><label>Izplen SE (kWh/kWp)</label><input type="number" step="50" value="${sg.specificYield}" onblur="updateSolarGrid('specificYield', this.value)"></div>
+        <div class="field" style="background:var(--success-bg); padding:4px 6px; border-radius:6px;"><label style="color:var(--success); font-weight:800;">🔋 Kapaciteta baterije (kWh)</label><input type="number" step="1" min="0" value="${sg.batteryCapKwh}" onblur="updateSolarGrid('batteryCapKwh', this.value)"></div>
+        <div class="field"><label>DoD praznjenje (%)</label><input type="number" step="5" value="${sg.batteryDodPct}" onblur="updateSolarGrid('batteryDodPct', this.value)"></div>
+        <div class="field"><label>Izkoristek baterije (%)</label><input type="number" step="2" value="${sg.batteryEffPct}" onblur="updateSolarGrid('batteryEffPct', this.value)"></div>
+        <div class="field"><label>Direktna dnevna poraba (%)</label><input type="number" step="2" value="${sg.directSelfConsPct}" onblur="updateSolarGrid('directSelfConsPct', this.value)"></div>
         <div class="field"><label>Oddaja viškov</label><select onchange="updateSolarGrid('exportMode', this.value)"><option value="sell" ${sg.exportMode === 'sell' ? 'selected' : ''}>Odkup viškov</option><option value="zero" ${sg.exportMode === 'zero' ? 'selected' : ''}>Zero-export (0 €)</option></select></div>
-        <div class="field"><label>Odkup viškov (€/kWh)</label><input type="number" step="0.005" value="${sg.exportPriceEur}" onchange="updateSolarGrid('exportPriceEur', this.value)"></div>
-        <div class="field"><label>Cena iz omrežja (€/kWh)</label><input type="number" step="0.005" value="${sg.gridImportPriceEur}" onchange="updateSolarGrid('gridImportPriceEur', this.value)"></div>
-        <div class="field"><label>Cena baterije (€)</label><input type="number" step="250" value="${sg.batteryInvestEur}" onchange="updateSolarGrid('batteryInvestEur', this.value)"></div>
+        <div class="field"><label>Odkup viškov (€/kWh)</label><input type="number" step="0.005" value="${sg.exportPriceEur}" onblur="updateSolarGrid('exportPriceEur', this.value)"></div>
+        <div class="field"><label>Cena iz omrežja (€/kWh)</label><input type="number" step="0.005" value="${sg.gridImportPriceEur}" onblur="updateSolarGrid('gridImportPriceEur', this.value)"></div>
+        <div class="field"><label>Cena baterije (€)</label><input type="number" step="250" value="${sg.batteryInvestEur}" onblur="updateSolarGrid('batteryInvestEur', this.value)"></div>
       </div>
       <canvas id="solarBatChartCanvas" class="solar-canvas" style="margin-bottom:10px; cursor:default;"></canvas>
       <div class="table-wrap"><table class="layers-table"><thead><tr><th>Mesec</th><th>Poraba hiše</th><th>TČ (model)</th><th>Proizv. SE</th><th>Direktno</th><th>Iz baterije</th><th>Dokup omrežje</th><th>Višek</th><th>Samooskrba</th></tr></thead><tbody>${monthRows}</tbody></table></div>
@@ -795,9 +794,9 @@ function renderRoomsTab(totals) {
     const isRisky = (roomTi - roomDew) < 4.0;
 
     return `<tr>
-      <td><input type="text" value="${r.name}" onchange="updateRoom(${idx}, 'name', this.value)"></td>
-      <td><input type="number" step="1" value="${r.area}" onchange="updateRoom(${idx}, 'area', this.value)"></td>
-      <td><input type="number" step="0.5" value="${r.ti}" onchange="updateRoom(${idx}, 'ti', this.value)"></td>
+      <td><input type="text" value="${r.name}" onblur="updateRoom(${idx}, 'name', this.value)"></td>
+      <td><input type="number" step="1" value="${r.area}" onblur="updateRoom(${idx}, 'area', this.value)"></td>
+      <td><input type="number" step="0.5" value="${r.ti}" onblur="updateRoom(${idx}, 'ti', this.value)"></td>
       <td><select onchange="updateRoom(${idx}, 'expFactor', this.value)"><option value="0.8" ${r.expFactor == 0.8 ? 'selected' : ''}>Notranji (0.8)</option><option value="1.0" ${r.expFactor == 1.0 ? 'selected' : ''}>Srednji (1.0)</option><option value="1.1" ${r.expFactor == 1.1 ? 'selected' : ''}>2 zunanji steni (1.1)</option><option value="1.15" ${r.expFactor == 1.15 ? 'selected' : ''}>Kopalnica / vogal (1.15)</option></select></td>
       <td><select onchange="updateRoom(${idx}, 'spacing', this.value)"><option value="10" ${r.spacing == 10 ? 'selected' : ''}>10 cm</option><option value="15" ${r.spacing == 15 ? 'selected' : ''}>15 cm</option><option value="20" ${r.spacing == 20 ? 'selected' : ''}>20 cm</option></select></td>
       <td><strong>${roomSpecW.toFixed(1)} W/m²</strong></td>
@@ -815,7 +814,7 @@ function renderRoomsTab(totals) {
         <span>🛋️ Dimenzioniranje talnega gretja, pretoki (L/min) in varnost pred plesnijo po prostorih</span>
         <div style="display:flex; gap:8px; align-items:center;">
           <span style="font-size:0.78rem; color:var(--muted)">ΔT (K):</span>
-          <input type="number" step="0.5" min="3" max="10" style="width:65px; padding:4px;" value="${floorDT}" onchange="updateFloorDT(this.value)">
+          <input type="number" step="0.5" min="3" max="10" style="width:65px; padding:4px;" value="${floorDT}" onblur="updateFloorDT(this.value)">
           <button class="btn-primary btn-sm" onclick="addRoom()">+ Dodaj prostor</button>
         </div>
       </div>
@@ -852,7 +851,7 @@ function renderRoiTab() {
     const savedW = area * deltaU * deltaT, savedKwh = (savedW / 1000) * hours, savedEur = savedKwh * eurPerKwhThermal;
     const netInv = Math.max(0, (parseFloat(m.invest) || 0) - (parseFloat(m.subsidy) || 0)), payback = savedEur > 0 ? (netInv / savedEur) : 0;
     sumPowerSavedW += savedW; sumKwhSaved += savedKwh; sumEurSaved += savedEur; sumNetInvest += netInv;
-    return `<tr><td><input type="text" value="${m.name}" onchange="updateRoiMeasure(${idx}, 'name', this.value)"></td><td><input type="number" step="5" value="${m.area}" onchange="updateRoiMeasure(${idx}, 'area', this.value)"></td><td><input type="number" step="0.05" value="${m.uBefore}" onchange="updateRoiMeasure(${idx}, 'uBefore', this.value)"></td><td><input type="number" step="0.02" value="${m.uAfter}" onchange="updateRoiMeasure(${idx}, 'uAfter', this.value)"></td><td><input type="number" step="100" value="${m.invest}" onchange="updateRoiMeasure(${idx}, 'invest', this.value)"></td><td><input type="number" step="100" value="${m.subsidy}" onchange="updateRoiMeasure(${idx}, 'subsidy', this.value)"></td><td><strong>-${Math.round(savedW)} W</strong></td><td><strong style="color:var(--success)">${Math.round(savedKwh)} kWh</strong></td><td><strong style="color:var(--primary)">${Math.round(savedEur)} €/leto</strong></td><td><span class="badge ${payback <= 12 ? 'badge-ok' : 'badge-warn'}">${payback > 0 ? payback.toFixed(1) + ' let' : '-'}</span></td><td><button class="btn-danger btn-sm" onclick="removeRoiMeasure(${idx})">✕</button></td></tr>`;
+    return `<tr><td><input type="text" value="${m.name}" onblur="updateRoiMeasure(${idx}, 'name', this.value)"></td><td><input type="number" step="5" value="${m.area}" onblur="updateRoiMeasure(${idx}, 'area', this.value)"></td><td><input type="number" step="0.05" value="${m.uBefore}" onblur="updateRoiMeasure(${idx}, 'uBefore', this.value)"></td><td><input type="number" step="0.02" value="${m.uAfter}" onblur="updateRoiMeasure(${idx}, 'uAfter', this.value)"></td><td><input type="number" step="100" value="${m.invest}" onblur="updateRoiMeasure(${idx}, 'invest', this.value)"></td><td><input type="number" step="100" value="${m.subsidy}" onblur="updateRoiMeasure(${idx}, 'subsidy', this.value)"></td><td><strong>-${Math.round(savedW)} W</strong></td><td><strong style="color:var(--success)">${Math.round(savedKwh)} kWh</strong></td><td><strong style="color:var(--primary)">${Math.round(savedEur)} €/leto</strong></td><td><span class="badge ${payback <= 12 ? 'badge-ok' : 'badge-warn'}">${payback > 0 ? payback.toFixed(1) + ' let' : '-'}</span></td><td><button class="btn-danger btn-sm" onclick="removeRoiMeasure(${idx})">✕</button></td></tr>`;
   }).join('');
 
   const fuelOptions = state.fuels.map(f => `<option value="${f.id}" ${f.id === state.roi.selectedFuelId ? 'selected' : ''}>${f.name}</option>`).join('');
@@ -901,7 +900,7 @@ function renderSidebar(totals) {
 
   document.getElementById('costTable').innerHTML = `<thead><tr><th>Energent</th><th>Cena</th><th>SCOP / Izk.</th><th>Skupaj/leto</th></tr></thead><tbody>${state.fuels.map((f, fIdx) => {
     const c = calcFuelAnnualCost(f, totals.netHeatingKwh, totals.annualDhwKwh);
-    return `<tr><td><strong>${f.name}</strong></td><td><input type="number" step="0.01" value="${f.price}" onchange="updateFuel(${fIdx}, 'price', this.value)"> <span style="font-size:0.66rem; color:var(--muted)">${f.unit}</span></td><td><input type="number" step="0.05" style="width:46px;" value="${f.eff}" onchange="updateFuel(${fIdx}, 'eff', this.value)"></td><td style="color:var(--primary)">${Math.round(c.annualEur).toLocaleString('sl-SI')} €</td></tr>`;
+    return `<tr><td><strong>${f.name}</strong></td><td><input type="number" step="0.01" value="${f.price}" onblur="updateFuel(${fIdx}, 'price', this.value)"> <span style="font-size:0.66rem; color:var(--muted)">${f.unit}</span></td><td><input type="number" step="0.05" style="width:46px;" value="${f.eff}" onblur="updateFuel(${fIdx}, 'eff', this.value)"></td><td style="color:var(--primary)">${Math.round(c.annualEur).toLocaleString('sl-SI')} €</td></tr>`;
   }).join('')}</tbody>`;
 
   const modeLabels = { main: 'Glavni vir ogrevanja (TČ s COP za 55 °C)', sanitary_hp: `Ločena sanitarna TČ (SCOP ${state.dhwAndWell.sanitaryHpCop})`, el_boiler: 'Klasični električni bojler (COP 1.0)', combo: 'Kombinirano (pozimi glavni vir, poleti el. bojler)' };
