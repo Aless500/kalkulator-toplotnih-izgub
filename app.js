@@ -257,7 +257,7 @@ function renderLayeredGroup(groupKey, titleLabel) {
             <thead>
               <tr>
                 <th style="width:26px;">#</th><th>Sloj materiala (od NOTRANJE proti ZUNANJI strani)</th>
-                <th style="width:68px;">d (cm)</th><th style="width:74px;">λ (W/mK)</th>
+                <th style="width:72px;">d (cm)</th><th style="width:78px;">λ (W/mK)</th>
                 <th style="width:82px;">🪵 Špirovci (%)</th><th style="width:65px;">μ (para)</th>
                 <th style="width:68px;">ρ (kg/m³)</th><th style="width:68px;">c (J/kgK)</th>
                 <th style="width:80px;">R (m²K/W)</th><th style="width:62px;">Zamik</th><th style="width:84px;">Vrstni red</th>
@@ -267,22 +267,22 @@ function renderLayeredGroup(groupKey, titleLabel) {
               ${res.computedLayers.map((l, lIdx) => `
                 <tr style="${l.bypassedByVent ? 'background:#0284c71a;' : (l.woodPct > 0 ? 'background:#f59e0b1a;' : '')}">
                   <td><strong>${lIdx + 1}.</strong></td>
-                  <td><select onchange="selectMaterial('${groupKey}', ${elIdx}, ${lIdx}, this.value)">${buildMaterialOptions(l.matId)}</select></td>
-                  <td><input type="number" step="0.5" min="0.01" value="${l.d}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'd', this.value)"></td>
+                  <td><select onchange="selectMaterial('${groupKey}',${elIdx}, ${lIdx}, this.value)">${buildMaterialOptions(l.matId)}</select></td>
+                  <td><input type="number" step="0.5" min="0.01" value="${l.d}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'd', this.value)"></td>
                   <td>
-                    <input type="number" step="0.001" min="0.01" value="${l.lambda}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'lambda', this.value)">
+                    <input type="number" step="0.001" min="0.01" value="${l.lambda}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'lambda', this.value)">
                     ${l.woodPct > 0 ? `<div style="font-size:0.65rem; color:#d97706; font-weight:700;">λ_eff=${l.lamEff.toFixed(3)}</div>` : ''}
                   </td>
-                  <td><input type="number" step="0.5" min="0" max="90" value="${l.woodPct || 0}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'woodPct', this.value)"></td>
-                  <td><input type="number" step="1" min="1" value="${l.mu}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'mu', this.value)"></td>
-                  <td><input type="number" step="10" min="1" value="${l.rho}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'rho', this.value)"></td>
-                  <td><input type="number" step="50" min="100" value="${l.c}" onchange="updateLayer('${groupKey}', ${elIdx}, ${lIdx}, 'c', this.value)"></td>
+                  <td><input type="number" step="0.5" min="0" max="90" value="${l.woodPct \vert{}\vert{} 0}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'woodPct', this.value)"></td>
+                  <td><input type="number" step="1" min="1" value="${l.mu}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'mu', this.value)"></td>
+                  <td><input type="number" step="10" min="1" value="${l.rho}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'rho', this.value)"></td>
+                  <td><input type="number" step="50" min="100" value="${l.c}" onchange="updateLayer('${groupKey}', ${elIdx},${lIdx}, 'c', this.value)"></td>
                   <td>${l.bypassedByVent ? `<span class="badge badge-info">🌬️ Prezr.</span>` : `<strong>${l.r.toFixed(2)}</strong>`}</td>
                   <td>${l.layerPhi.toFixed(1)} h</td>
                   <td>
-                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx}, ${lIdx}, -1)">▲</button>
-                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx}, ${lIdx}, 1)">▼</button>
-                    <button class="btn-danger btn-sm" onclick="removeLayer('${groupKey}', ${elIdx}, ${lIdx})">✕</button>
+                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx},${lIdx}, -1)">▲</button>
+                    <button class="btn-secondary btn-sm" onclick="moveLayer('${groupKey}', ${elIdx},${lIdx}, 1)">▼</button>
+                    <button class="btn-danger btn-sm" onclick="removeLayer('${groupKey}', ${elIdx},${lIdx})">✕</button>
                   </td>
                 </tr>
               `).join('')}
@@ -396,7 +396,6 @@ function renderBomTab() {
     </div>`;
 }
 
-// Izvoz popisa materialov v Excel CSV
 function exportBomToCSV() {
   const wasteFactor = 1 + ((parseFloat(state.bomWastePct) || 5) / 100);
   let csv = 'Material;Debelina (cm);Uporabljeno v sklopu;Neto m2;Z odrezom m2;Neto m3;Za narocilo m3\n';
@@ -1205,7 +1204,18 @@ function selectMaterial(group, elIdx, lIdx, matId) {
   renderAll();
 }
 
-function updateLayer(group, elIdx, lIdx, field, val) { state[group][elIdx].layers[lIdx][field] = parseFloat(val) || 0; renderAll(); }
+function updateLayer(group, elIdx, lIdx, field, val) {
+  state[group][elIdx].layers[lIdx][field] = parseFloat(val) || 0;
+  saveState();
+  const totals = calculateAllTotals();
+  renderSidebar(totals);
+  renderTabs(totals);
+  renderScenarioBar(totals);
+  const el = state[group][elIdx];
+  const res = calcAssembly(el);
+  drawGlaserCanvas(`canvas_${group}_${elIdx}`, el, res);
+}
+
 function addLayer(group, elIdx) { state[group][elIdx].layers.push({ matId: 'eps_graf_70', name: 'Grafitni EPS 70/80', d: 10.0, lambda: 0.031, mu: 30, rho: 16, c: 1450, woodPct: 0 }); renderAll(); }
 function removeLayer(group, elIdx, lIdx) { if (state[group][elIdx].layers.length > 1) { state[group][elIdx].layers.splice(lIdx, 1); renderAll(); } }
 function moveLayer(group, elIdx, lIdx, dir) {
@@ -1282,7 +1292,14 @@ function importJSON(e) {
   reader.readAsText(file);
 }
 
-window.addEventListener('resize', () => renderAll());
+let lastWindowWidth = window.innerWidth;
+window.addEventListener('resize', () => {
+  if (window.innerWidth !== lastWindowWidth) {
+    lastWindowWidth = window.innerWidth;
+    renderAll();
+  }
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tiInput').value = state.boundary.ti;
   document.getElementById('teInput').value = state.boundary.te;
